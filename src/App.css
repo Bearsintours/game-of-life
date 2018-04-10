@@ -16,3 +16,17 @@
 .App-intro {
   font-size: large;
 }
+
+.square {
+  border: 1px solid black;
+  display: inline-block;
+  margin-bottom: -1px;
+  margin-left: -1px;
+  width: 15px;
+  height: 15px;
+}
+
+.grid {
+  line-height: 0;
+  width: 160px;
+}

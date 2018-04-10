@@ -2,63 +2,74 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <Board />
-        <Settings />
-      </div>
-    );
-  }
+
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <h1>Game of Life</h1>
+                <Game />
+                <Settings />
+            </div>
+        );
+    };
+};
+
+
+class Game extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            board: Array(10).fill().map(() => Array(10).fill(null)),
+            cols: 10,
+            rows: 10,
+        }
+    }
+
+    render() {
+        const columns = this.state.cols;
+        const rows = this.state.rows;
+        let board = [];
+        let rowsArray = [];
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < columns; j++) {
+                let id = i + ',' + j;
+                board.push({ id: id, status: 'dead' });
+                rowsArray.push(
+                    <Cell
+                        key={id}
+                        id={id}
+                    />
+                );
+            }
+        }
+
+        return (
+            <div className="grid">
+                {rowsArray}
+            </div>
+        );
+    }
 }
 
-const Header = () => {
-  return (
-    <div>
-      <header className="App-header">
-        <h1 className="App-title">Game of Life</h1>
-      </header>
-      <p className="App-intro">
-        Instructions 
-      </p>
-    </div>
-  );
-};
 
-class Board extends React.Component {
-  state = {
-    columns: 10,
-    rows: 10,
-
-  };
-  render() {
-    let board = [];
-    const deadCell = 0;
-    const aliveCell = 1;
-    for (let row = 0; row < this.state.columns; row++) {
-      for (let col = 0; col < this.state.rows; col++) {
-        if (row % 2 === 0) board.push(aliveCell);
-        else board.push(deadCell);
-      }
-    }
+function Cell(props) {
     return (
-      <div>
-        <p>{board}</p>
-      </div>
-    );
-  };
-};
+        <div className="square" id={props.id}>
+        </div>
+    )
+}
+
 
 class Settings extends React.Component {
-  render() {
-    return (
-      <div>
-        <p>Buttons here</p>
-      </div>
-    );
-  };
+    render() {
+        return (
+            <div>
+                <p>Buttons here</p>
+            </div>
+        );
+    };
 };
+
 
 export default App;

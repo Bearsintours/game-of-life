@@ -1,75 +1,114 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 
 class App extends React.Component {
-    render() {
-        return (
-            <div>
-                <h1>Game of Life</h1>
-                <Game />
-                <Settings />
-            </div>
-        );
-    };
+  render () {
+    return (
+      <div>
+        <h1>Game of Life</h1>
+        <Game/>
+      </div>
+    );
+  };
 };
 
 
 class Game extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            board: Array(10).fill().map(() => Array(10).fill(null)),
-            cols: 10,
-            rows: 10,
-        }
+  constructor(props) {
+    super(props);
+    this.state = {
+      board: Array(50).fill().map(() => Array(50).fill('dead')),
+      cols: 50,
+      rows: 50,
+      generations: 0,
     }
+  }
+  
+  initialBoard = () => {
+    let boardCopy = [...this.state.board];
+    let randomState = () => Math.round(Math.random(10)) === 0 ? 'alive' : 'dead';
+    for (let i = 0; i < boardCopy.length; i++) {
+      for (let j = 0; j < boardCopy[i].length; j++) {
+        boardCopy[i][j] = randomState();
+      }
+    }
+    this.setState({ board: boardCopy })
+  }
+  
+  clearBoard = () => {
+    let boardCopy = [...this.state.board];
+    for (let i = 0; i < boardCopy.length; i++) {
+      for (let j = 0; j < boardCopy[i].length; j++) {
+        boardCopy[i][j] = 'dead';
+      }
+    }
+    this.setState({ board: boardCopy })  
+  }
+  
+  handleClickCell = (i,j) => {
+    let boardCopy = [...this.state.board];
+    boardCopy[i][j] = boardCopy[i][j] === 'dead' ? 'alive' : 'dead';
+    this.setState({ board: boardCopy })
+  }
 
-    render() {
-        const columns = this.state.cols;
-        const rows = this.state.rows;
-        let board = [];
-        let rowsArray = [];
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
-                let id = i + ',' + j;
-                board.push({ id: id, status: 'dead' });
-                rowsArray.push(
-                    <Cell
-                        key={id}
-                        id={id}
-                    />
-                );
-            }
-        }
-
-        return (
-            <div className="grid">
-                {rowsArray}
-            </div>
+  
+  render() {
+    const columns = this.state.cols;
+    const rows = this.state.rows;
+    const gridWidth = rows * 16;
+    let rowsArray = [];
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        let id = i + ',' + j;
+        let classCell = this.state.board[i][j] === 'dead' ? 'cell dead' : 'cell alive';
+        rowsArray.push(
+          <Cell 
+            key={id}
+            id={id}
+            row={i}
+            col={j}
+            classCell={classCell}
+            handleClickCell={this.handleClickCell}
+          />
         );
+      }
     }
-}
-
-
-function Cell(props) {
+    
     return (
-        <div className="square" id={props.id}>
+      <div>
+        <button onClick={this.initialBoard}>Start</button>
+        <button onClick={this.clearBoard}>Clear</button>
+        <div className="grid" style={{width: gridWidth}}>
+          {rowsArray} 
         </div>
-    )
+        <div>
+          Generations: {this.state.generations}
+        </div>
+      </div>
+    );
+  }
 }
 
 
-class Settings extends React.Component {
-    render() {
-        return (
-            <div>
-                <p>Buttons here</p>
-            </div>
-        );
-    };
-};
-
+class Cell extends React.Component { 
+  handleClickCell = () => {
+    return this.props.handleClickCell(this.props.row, this.props.col);
+  }
+  render() {
+    
+    return (
+      <div 
+        className={this.props.classCell} 
+        id={this.props.id} 
+        col={this.props.col}
+        row={this.props.row}
+        status={this.props.status}
+        onClick={this.handleClickCell}
+      >    
+      </div>
+    )
+  }
+}
 
 export default App;

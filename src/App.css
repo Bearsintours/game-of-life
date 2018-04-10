@@ -1,3 +1,7 @@
+body {
+  text-align: center;
+}
+
 .App {
   text-align: center;
 }
@@ -17,7 +21,7 @@
   font-size: large;
 }
 
-.square {
+.cell {
   border: 1px solid black;
   display: inline-block;
   margin-bottom: -1px;
@@ -26,7 +30,15 @@
   height: 15px;
 }
 
+.dead {
+  background-color: grey;
+}
+
+.alive {
+  background-color: red;
+}
+
 .grid {
   line-height: 0;
-  width: 160px;
+  margin: auto;
 }

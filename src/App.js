@@ -22,10 +22,20 @@ class Game extends React.Component {
       cols: 50,
       rows: 50,
       generations: 0,
+      playing: false
     }
   }
   
-  initialBoard = () => {
+  componentDidMount() {
+    this.createRandomBoard();
+    this.interval = setInterval(this.updateCells, 1000); 
+  }
+  
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+  
+  createRandomBoard = () => {
     let boardCopy = [...this.state.board];
     let randomState = () => Math.round(Math.random(10)) === 0 ? 'alive' : 'dead';
     for (let i = 0; i < boardCopy.length; i++) {
@@ -33,7 +43,22 @@ class Game extends React.Component {
         boardCopy[i][j] = randomState();
       }
     }
-    this.setState({ board: boardCopy })
+    this.setState((prevState) => ({ board: boardCopy, playing: !prevState.playing }))
+  }
+  
+  updateCells = () => {
+    if (this.state.playing) {
+      let boardCopy = [...this.state.board];
+      for (let i = 0; i < boardCopy.length; i++) {
+        for (let j = 0; j < boardCopy[i].length; j++) {
+          boardCopy[i][j] = boardCopy[i][j] === 'dead' ? 'alive' : 'dead';
+        }
+      }
+      this.setState((prevState) => ({ 
+        board: boardCopy, 
+        generations: prevState.generations + 1 
+      }));
+    }   
   }
   
   clearBoard = () => {
@@ -43,7 +68,7 @@ class Game extends React.Component {
         boardCopy[i][j] = 'dead';
       }
     }
-    this.setState({ board: boardCopy })  
+    this.setState({ board: boardCopy, playing: !this.state.playing })  
   }
   
   handleClickCell = (i,j) => {
@@ -57,15 +82,17 @@ class Game extends React.Component {
     const columns = this.state.cols;
     const rows = this.state.rows;
     const gridWidth = rows * 16;
+    let board = [];
     let rowsArray = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
         let id = i + ',' + j;
-        let classCell = this.state.board[i][j] === 'dead' ? 'cell dead' : 'cell alive';
+        let classCell = this.state.board[i][j] == 'dead' ? 'cell dead' : 'cell alive';
         rowsArray.push(
           <Cell 
             key={id}
             id={id}
+            status={status}
             row={i}
             col={j}
             classCell={classCell}
@@ -77,7 +104,7 @@ class Game extends React.Component {
     
     return (
       <div>
-        <button onClick={this.initialBoard}>Start</button>
+        <button onClick={this.createRandomBoard}>Start</button>
         <button onClick={this.clearBoard}>Clear</button>
         <div className="grid" style={{width: gridWidth}}>
           {rowsArray} 

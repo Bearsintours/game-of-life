@@ -51,7 +51,7 @@ class Game extends React.Component {
       let boardCopy = [...this.state.board];
       for (let i = 0; i < boardCopy.length; i++) {
         for (let j = 0; j < boardCopy[i].length; j++) {
-          boardCopy[i][j] = boardCopy[i][j] === 'dead' ? 'alive' : 'dead';
+          boardCopy[i][j] = boardCopy[i][j] === 'alive' ? 'dead' : 'alive';
         }
       }
       this.setState((prevState) => ({ 
@@ -62,13 +62,26 @@ class Game extends React.Component {
   }
   
   clearBoard = () => {
+    clearInterval(this.interval);
     let boardCopy = [...this.state.board];
     for (let i = 0; i < boardCopy.length; i++) {
       for (let j = 0; j < boardCopy[i].length; j++) {
         boardCopy[i][j] = 'dead';
       }
     }
-    this.setState({ board: boardCopy, playing: !this.state.playing })  
+    this.setState((prevState) => ({ board: boardCopy, generations: 0, playing: prevState.playing ? !prevState.playing : prevState.playing })) 
+  }
+  
+  pauseGame = () => {
+    clearInterval(this.interval);
+    this.setState((prevState) => ({ playing: !prevState.playing }))
+  }
+  
+  runGame = () => {
+    if (!this.state.playing) {
+      this.setState((prevState) => ({ playing: !prevState.playing }))
+      this.interval = setInterval(this.updateCells, 1000);
+    }
   }
   
   handleClickCell = (i,j) => {
@@ -82,17 +95,15 @@ class Game extends React.Component {
     const columns = this.state.cols;
     const rows = this.state.rows;
     const gridWidth = rows * 16;
-    let board = [];
     let rowsArray = [];
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
         let id = i + ',' + j;
-        let classCell = this.state.board[i][j] == 'dead' ? 'cell dead' : 'cell alive';
+        let classCell = this.state.board[i][j] === 'dead' ? 'cell dead' : 'cell alive';
         rowsArray.push(
           <Cell 
             key={id}
             id={id}
-            status={status}
             row={i}
             col={j}
             classCell={classCell}
@@ -104,7 +115,8 @@ class Game extends React.Component {
     
     return (
       <div>
-        <button onClick={this.createRandomBoard}>Start</button>
+        <button onClick={this.runGame}>Run</button>
+        <button onClick={this.pauseGame}>Pause</button>
         <button onClick={this.clearBoard}>Clear</button>
         <div className="grid" style={{width: gridWidth}}>
           {rowsArray} 
@@ -130,7 +142,6 @@ class Cell extends React.Component {
         id={this.props.id} 
         col={this.props.col}
         row={this.props.row}
-        status={this.props.status}
         onClick={this.handleClickCell}
       >    
       </div>

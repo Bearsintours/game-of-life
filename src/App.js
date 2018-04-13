@@ -18,9 +18,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: Array(50).fill().map(() => Array(50).fill('dead')),
-      cols: 50,
-      rows: 50,
+      board: Array(10).fill().map(() => Array(10).fill('dead')),
+      cols: 10,
+      rows: 10,
       generations: 0,
       playing: false
     }
@@ -48,10 +48,20 @@ class Game extends React.Component {
   
   updateCells = () => {
     if (this.state.playing) {
+      let board = this.state.board;
       let boardCopy = [...this.state.board];
       for (let i = 0; i < boardCopy.length; i++) {
         for (let j = 0; j < boardCopy[i].length; j++) {
-          boardCopy[i][j] = boardCopy[i][j] === 'alive' ? 'dead' : 'alive';
+          if (boardCopy[i][j] === 'alive') {
+            if (countNeighbours(boardCopy, i, j) < 2 || countNeighbours(boardCopy, i, j) > 3) {
+              boardCopy[i][j] = 'dead';
+            }
+          }
+          else if (boardCopy[i][j] === 'dead'){
+            if (countNeighbours(boardCopy, i, j) === 3) {
+              boardCopy[i][j] = 'alive';
+            }
+          }
         }
       }
       this.setState((prevState) => ({ 
@@ -148,5 +158,21 @@ class Cell extends React.Component {
     )
   }
 }
+
+function countNeighbours(board, r, c) {
+  let count = 0;
+  let l = board.length;
+  if (r + 1 < l && board[r + 1][c] === 'alive') { console.log('bottom');count++;}
+  if (r - 1 >= 0 && board[r - 1][c] === 'alive') { console.log('top'); count++; }
+  if (c + 1 < l && board[r][c + 1] === 'alive') { console.log('right'); count++; }
+  if (c - 1 >= 0 && board[r][c - 1] === 'alive') { console.log('left'); count++; }
+  if (r - 1 >= 0 && c - 1 >= 0 && board[r - 1][c - 1] === 'alive') { console.log('top-left'); count++; }
+  if (r - 1 >= 0 && c + 1 < l && board[r - 1][c + 1] === 'alive') { console.log('top-right'); count++; }
+  if (r + 1 < l && c - 1 >= 0 && board[r + 1][c - 1] === 'alive') { console.log('bottom-left'); count++; }
+  if (r + 1 < l && c + 1 < l && board[r + 1][c + 1] === 'alive') { console.log('bottom-right'); count++; }
+  console.log(r, c, count);
+  return count;
+}
+
 
 export default App;

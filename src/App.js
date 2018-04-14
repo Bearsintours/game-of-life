@@ -18,9 +18,9 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: Array(10).fill().map(() => Array(10).fill('dead')),
-      cols: 10,
-      rows: 10,
+      board: Array(5).fill().map(() => Array(5).fill('dead')),
+      cols: 5,
+      rows: 5,
       generations: 0,
       playing: false
     }
@@ -36,6 +36,7 @@ class Game extends React.Component {
   }
   
   createRandomBoard = () => {
+    console.log("before create state: ", this.state.board)
     let boardCopy = [...this.state.board];
     let randomState = () => Math.round(Math.random(10)) === 0 ? 'alive' : 'dead';
     for (let i = 0; i < boardCopy.length; i++) {
@@ -44,36 +45,79 @@ class Game extends React.Component {
       }
     }
     this.setState((prevState) => ({ board: boardCopy, playing: !prevState.playing }))
+    console.log("after create state: ", this.state.board)
   }
   
   updateCells = () => {
     if (this.state.playing) {
-      let board = this.state.board;
+      let newBoard = this.state.board;
       let boardCopy = [...this.state.board];
-      for (let i = 0; i < boardCopy.length; i++) {
-        for (let j = 0; j < boardCopy[i].length; j++) {
-          if (boardCopy[i][j] === 'alive') {
-            if (countNeighbours(boardCopy, i, j) < 2 || countNeighbours(boardCopy, i, j) > 3) {
-              boardCopy[i][j] = 'dead';
+      console.log('state before: ',this.state.board);
+      console.log('copy: ', newBoard)
+      console.log('copy with [...] : ', boardCopy)
+      //let boardCopy = [...this.state.board];
+      let rows = this.state.rows;
+      let cols = this.state.cols;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          //let cell = this.state.board[r][c];
+          console.log('row ' + r + ' col '+ c);
+          let count = 0;
+          if (r + 1 < rows && this.state.board[r + 1][c] === 'alive') { console.log('bottom'); count++; }
+          if (r - 1 >= 0 && this.state.board[r - 1][c] === 'alive') {
+            console.log('top');
+            count++;
+          }
+          if (c + 1 < cols && this.state.board[r][c + 1] === 'alive') {
+            console.log('right');
+            count++;
+          }
+          if (c - 1 >= 0 && this.state.board[r][c - 1] === 'alive') {
+            console.log('left');
+            count++;
+          }
+          if (r - 1 >= 0 && c - 1 >= 0 && this.state.board[r - 1][c - 1] === 'alive') {
+            console.log('top-left');
+            count++;
+          }
+          if (r - 1 >= 0 && c + 1 < cols && this.state.board[r - 1][c + 1] === 'alive') {
+            console.log('top-right');
+            count++;
+          }
+          if (r + 1 < rows && c - 1 >= 0 && this.state.board[r + 1][c - 1] === 'alive') {
+            console.log('bottom-left');
+            count++;
+          }
+          if (r + 1 < rows && c + 1 < cols && this.state.board[r + 1][c + 1] === 'alive') {
+            console.log('bottom-right');
+            count++;
+          }
+
+          if (this.state.board[r][c] === 'alive') {
+            if (count < 2 || count > 3) {
+              newBoard[r][c] = 'dead';
             }
           }
-          else if (boardCopy[i][j] === 'dead'){
-            if (countNeighbours(boardCopy, i, j) === 3) {
-              boardCopy[i][j] = 'alive';
+          else if (this.state.board[r][c] === 'dead') {
+            if (count === 3) {
+              newBoard[r][c] = 'alive';
             }
           }
         }
+        console.log('Copy after: ', newBoard)
       }
       this.setState((prevState) => ({ 
-        board: boardCopy, 
+        board: newBoard, 
         generations: prevState.generations + 1 
       }));
     }   
+    
+    console.log('State after: ', this.state.board)
   }
   
   clearBoard = () => {
     clearInterval(this.interval);
-    let boardCopy = [...this.state.board];
+    let boardCopy = this.state.board;
     for (let i = 0; i < boardCopy.length; i++) {
       for (let j = 0; j < boardCopy[i].length; j++) {
         boardCopy[i][j] = 'dead';
@@ -95,9 +139,11 @@ class Game extends React.Component {
   }
   
   handleClickCell = (i,j) => {
-    let boardCopy = [...this.state.board];
-    boardCopy[i][j] = boardCopy[i][j] === 'dead' ? 'alive' : 'dead';
+    console.log('State before click: ' + this.state.board)
+    let boardCopy = this.state.board;
+    boardCopy[i][j] = this.state.board[i][j] === 'dead' ? 'alive' : 'dead';
     this.setState({ board: boardCopy })
+    console.log('state after click: ' + this.state.board);
   }
 
   
@@ -158,21 +204,5 @@ class Cell extends React.Component {
     )
   }
 }
-
-function countNeighbours(board, r, c) {
-  let count = 0;
-  let l = board.length;
-  if (r + 1 < l && board[r + 1][c] === 'alive') { console.log('bottom');count++;}
-  if (r - 1 >= 0 && board[r - 1][c] === 'alive') { console.log('top'); count++; }
-  if (c + 1 < l && board[r][c + 1] === 'alive') { console.log('right'); count++; }
-  if (c - 1 >= 0 && board[r][c - 1] === 'alive') { console.log('left'); count++; }
-  if (r - 1 >= 0 && c - 1 >= 0 && board[r - 1][c - 1] === 'alive') { console.log('top-left'); count++; }
-  if (r - 1 >= 0 && c + 1 < l && board[r - 1][c + 1] === 'alive') { console.log('top-right'); count++; }
-  if (r + 1 < l && c - 1 >= 0 && board[r + 1][c - 1] === 'alive') { console.log('bottom-left'); count++; }
-  if (r + 1 < l && c + 1 < l && board[r + 1][c + 1] === 'alive') { console.log('bottom-right'); count++; }
-  console.log(r, c, count);
-  return count;
-}
-
 
 export default App;

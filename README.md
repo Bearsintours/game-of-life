@@ -1,8 +1,8 @@
 # Game of Life 
 
-## This is my implementation of Conway's Game of Life using React JS.
+### This is my implementation of Conway's Game of Life using React JS.
 
-## User Stories: 
+#### User Stories: 
 
 - [x] When I first arrive at the game, it will randomly generate a board and start playing.
 
@@ -16,4 +16,4 @@
 
 - [x] Each time the board changes, I can see how many generations have gone by.
 
-## Live version : https://s.codepen.io/Bearsintours/debug/jzQPbq/dXAqBbzWBBdk
+#### Live version : https://s.codepen.io/Bearsintours/debug/jzQPbq/dXAqBbzWBBdk

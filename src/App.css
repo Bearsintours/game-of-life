@@ -1,4 +1,6 @@
 body {
+  background-color: #ccc;
+  font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
 }
 
@@ -6,19 +8,17 @@ body {
   text-align: center;
 }
 
-.App-header {
-  background-color: #222;
-  height: 50px;
-  padding: 20px;
-  color: white;
+h1 {
+  font-size: 2em;
+  padding: 30px;
 }
 
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
+button {
+  background-color: indianred;
+  border: 2px solid rgb(50, 50, 50);
+  border-radius: 5px;
+  font-size: 1em; 
+  margin: 0 5px;
 }
 
 .cell {
@@ -31,14 +31,16 @@ body {
 }
 
 .dead {
-  background-color: grey;
+  background-color: rgb(50,50,50);
 }
 
 .alive {
-  background-color: red;
+  background-color: indianred;
 }
 
 .grid {
+  border-radius: 10px;
   line-height: 0;
-  margin: auto;
+  margin: 30px auto;
+
 }

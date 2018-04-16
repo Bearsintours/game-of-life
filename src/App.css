@@ -1,5 +1,7 @@
 body {
-  background-color: #ccc;
+  /* background-color: #ccc; */
+  background: radial-gradient(indianred, rgb(50, 50, 50));
+  color: white;
   font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
 }
@@ -9,16 +11,26 @@ body {
 }
 
 h1 {
-  font-size: 2em;
-  padding: 30px;
+  font-size: 3em;
+  padding: 10px;
 }
 
 button {
-  background-color: indianred;
-  border: 2px solid rgb(50, 50, 50);
+  background-color: transparent;
+  border: 2px solid #ccc;
   border-radius: 5px;
-  font-size: 1em; 
+  color: white;
+  cursor: pointer;
+  font-size: 1em;
   margin: 0 5px;
+  outline: none;
+  -webkit-transition-duration: 0.4s ease;
+  /* Safari */
+  transition-duration: 0.4s ease;
+}
+
+button:hover {
+  background-color: indianred;
 }
 
 .cell {
@@ -31,7 +43,7 @@ button {
 }
 
 .dead {
-  background-color: rgb(50,50,50);
+  background-color: rgb(50, 50, 50);
 }
 
 .alive {
@@ -42,5 +54,4 @@ button {
   border-radius: 10px;
   line-height: 0;
   margin: 30px auto;
-
 }

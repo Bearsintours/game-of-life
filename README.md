@@ -16,4 +16,4 @@
 
 - [x] Each time the board changes, I can see how many generations have gone by.
 
-#### Live version : https://s.codepen.io/Bearsintours/debug/jzQPbq/dXAqBbzWBBdk
+#### Live version : https://codepen.io/Bearsintours/full/jzQPbq
